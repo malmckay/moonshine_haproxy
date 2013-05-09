@@ -18,9 +18,11 @@ module Moonshine
       options = HashWithIndifferentAccess.new({
         :ssl     => false,
         :version => '1.4.15',
+        :log_dir => '/var/log',
         :restart_on_change => false,
         :reload_on_change => true
       }.merge(options))
+
       options[:major_version] = options[:version].split('.')[0..1].join('.')
 
       if options[:restart_on_change]
@@ -143,9 +145,9 @@ END
       file '/etc/rsyslog.d/40-haproxy.conf',
         :ensure => :present,
         :notify => service('rsyslog'),
-        :content => template(File.join(File.dirname(__FILE__), '..', '..', 'templates', 'haproxy.rsyslog.conf'))
+        :content => template(File.join(File.dirname(__FILE__), '..', '..', 'templates', 'haproxy.rsyslog.conf.erb'), binding)
 
-      logrotate '/var/log/haproxy*.log',
+      logrotate "#{options[:log_dir]}/haproxy*.log",
         :options => %w(daily missingok notifempty compress delaycompress sharedscripts),
         :postrotate => 'reload rsyslog >/dev/null 2>&1 || true'
       file "/etc/logrotate.d/varloghaproxy.conf", :ensure => :absent

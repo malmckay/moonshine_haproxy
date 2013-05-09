@@ -1,0 +1,6 @@
+local0.err <%= configuration[:haproxy][:log_dir] || '/var/log' %>/haproxy.error.log
+& ~
+local0.* <%= configuration[:haproxy][:log_dir] || '/var/log' %>/haproxy.log
+& ~
+$ModLoad imudp
+$UDPServerRun 514
