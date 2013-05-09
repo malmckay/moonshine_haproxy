@@ -23,4 +23,6 @@ ServerName https-proxy
   ErrorLog /var/log/apache2/error.log
   LogLevel warn
   CustomLog /var/log/apache2/access.log combined
+
+<%= configuration[:haproxy][:vhost_extra] %>
 </VirtualHost>
